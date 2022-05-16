@@ -1,0 +1,60 @@
+{
+	"name": "@ignsg/anfrage",
+	"version": "0.0.1",
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"dist",
+		"lib"
+	],
+	"exports": {
+		".": {
+			"#source": "./lib/index.ts",
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./backoff": {
+			"#source": "./lib/backoff/index.ts",
+			"types": "./dist/backoff.d.ts",
+			"import": "./dist/backoff.js"
+		},
+		"./cache": {
+			"#source": "./lib/cache/index.ts",
+			"types": "./dist/cache.d.ts",
+			"import": "./dist/cache.js"
+		},
+		"./fetch-state": {
+			"#source": "./lib/fetch-state/index.ts",
+			"types": "./dist/fetch-state.d.ts",
+			"import": "./dist/fetch-state.js"
+		},
+		"./retry": {
+			"#source": "./lib/retry/index.ts",
+			"types": "./dist/retry.d.ts",
+			"import": "./dist/retry.js"
+		},
+		"./types": {
+			"#source": "./lib/types.ts",
+			"types": "./dist/types.d.ts",
+			"import": "./dist/types.js"
+		}
+	},
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"start": "vite build --watch",
+		"build": "vite build",
+		"test": "vitest",
+		"test:related": "vitest related --run"
+	},
+	"devDependencies": {
+		"dts-bundle-generator": "6.9.0",
+		"happy-dom": "3.2.2",
+		"typescript": "4.7.1-rc",
+		"vite": "2.9.9",
+		"vite-dts": "1.0.4",
+		"vite-tsconfig-paths": "3.4.1",
+		"vitest": "0.12.6"
+	}
+}
