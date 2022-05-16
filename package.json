@@ -1,0 +1,46 @@
+{
+	"name": "@ignsg/anfrage-monorepo",
+	"private": true,
+	"engines": {
+		"node": "17.8.0"
+	},
+	"packageManager": "yarn@3.2.1",
+	"workspaces": [
+		"packages/*"
+	],
+	"#scripts": {
+		"check-dependencies": "Check integrity of yarn cache files to prevent malicious edits by 3rd party contributions"
+	},
+	"scripts": {
+		"prepare": "yarn install && ./prepare.sh && yarn each test run",
+		"each": "yarn workspaces foreach --verbose --parallel run",
+		"each:dev": "yarn workspaces foreach --verbose --parallel --interlaced run",
+		"format": "prettier -w . && eslint --fix .",
+		"lint": "python ./.tools/pre-commit.pyz run",
+		"check-dependencies": "yarn install --check-cache",
+		"change:create": "changeset",
+		"change:version": "changeset version",
+		"change:publish": "changeset publish"
+	},
+	"#resolutions": {
+		"typescript": "Force typescript to 4.7 since we use it's specific features"
+	},
+	"resolutions": {
+		"typescript": "4.7.1-rc"
+	},
+	"devDependencies": {
+		"@changesets/changelog-github": "0.4.4",
+		"@changesets/cli": "2.22.0",
+		"@types/node": "17.0.33",
+		"@typescript-eslint/eslint-plugin": "5.23.0",
+		"@typescript-eslint/parser": "5.23.0",
+		"eslint": "8.15.0",
+		"eslint-config-prettier": "8.5.0",
+		"eslint-plugin-simple-import-sort": "7.0.0",
+		"eslint-plugin-unused-imports": "2.0.0",
+		"lint-staged": "12.4.1",
+		"prettier": "2.6.2",
+		"typescript": "4.7.1-rc",
+		"vite": "2.9.9"
+	}
+}

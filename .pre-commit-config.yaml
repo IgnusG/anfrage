@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: c3b7932544bc490b4dfa671bef523ee685076c25 # v8.8.4
+    hooks:
+      - id: gitleaks
+        stages: ["commit"]
+
+  - repo: local
+    hooks:
+      - id: yarn-lint-staged
+        stages: ["commit"]
+        name: "Run lint-staged"
+        language: system
+        entry: yarn
+        args: ["lint-staged"]
+        types: [text]
+        require_serial: true
+        pass_filenames: false
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: 4d96698f756df4f9f510de95099d987cd7182de2 # v0.17.0
+    hooks:
+      - id: gitlint
+        name: "Lint commit message structure"
+        stages: ["commit-msg"]
