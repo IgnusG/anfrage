@@ -1,0 +1,6 @@
+{
+	"baseBranch": "main",
+	"ignore": ["example"],
+	"commit": ["./commit.js", {}],
+	"changelog": ["@changesets/changelog-github", { "repo": "IgnusG/anfrage" }]
+}
