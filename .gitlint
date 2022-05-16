@@ -1,0 +1,6 @@
+[general]
+ignore=title-must-not-contain-word,body-is-missing
+
+[title-match-regex]
+# Force Title case
+regex=^(?# Must start with a capital letter )[A-Z]+.*
