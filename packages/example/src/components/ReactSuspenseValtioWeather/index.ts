@@ -1,0 +1,1 @@
+export { ReactSuspenseValtioWeather } from "./ReactSuspenseValtioWeather";
