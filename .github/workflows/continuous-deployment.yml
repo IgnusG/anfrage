@@ -1,0 +1,31 @@
+name: GitHub CD
+on:
+  push:
+    branches: [main]
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/continuous-integration.yml
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: ci
+    environment:
+      name: Production
+    strategy:
+      matrix:
+        node-version: [17.8.0]
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # ratchet:actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install
+      - uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf # ratchet:changesets/action@v1
+        with:
+          publish: yarn each build && yarn changeset publish
+          version: yarn changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
