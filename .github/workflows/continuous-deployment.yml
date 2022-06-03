@@ -1,31 +1,41 @@
 name: GitHub CD
 on:
-  push:
-    branches: [main]
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+  workflow_call:
+concurrency: deployments-${{ github.ref }}
 jobs:
-  ci:
-    name: CI
-    uses: ./.github/workflows/continuous-integration.yml
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: ci
+    outputs:
+      packages: ${{ steps.package-matrix.outputs.packages }}
     environment:
       name: Production
-    strategy:
-      matrix:
-        node-version: [17.8.0]
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
       - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # ratchet:actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 17.8.0
       - run: yarn install
       - uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf # ratchet:changesets/action@v1
+        id: changesets
         with:
           publish: yarn each build && yarn changeset publish
-          version: yarn changeset version
+          version: exit 1 # There is no versioning available during deployment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: echo "::set-output name=packages::{\"include\":${{ steps.changesets.outputs.publishedPackages }}}"
+        id: package-matrix
+  deployment-status:
+    name: Update Deployment Statuses
+    runs-on: ubuntu-latest
+    needs: [release]
+    strategy:
+      matrix: ${{ fromJSON(needs.release.outputs.packages) }}
+    steps:
+      - uses: chrnorm/deployment-action@1b599fe41a0ef1f95191e7f2eec4743f2d7dfc48 # ratchet:chrnorm/deployment-action@v2
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          environment: ${{ matrix.name }}
+          payload: ${{ matrix }}
+          production-environment: true
